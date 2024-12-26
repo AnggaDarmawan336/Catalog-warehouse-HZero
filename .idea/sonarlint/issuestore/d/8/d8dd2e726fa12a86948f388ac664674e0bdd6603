@@ -1,0 +1,7 @@
+
+X
+java:S6813 "BRemove this field injection and use constructor injection instead.(êæÄÞ
+X
+java:S6813""BRemove this field injection and use constructor injection instead.(êæÄÞ
+b
+java:S6830"GRename this bean to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëæ˜ñúÿÿÿÿ

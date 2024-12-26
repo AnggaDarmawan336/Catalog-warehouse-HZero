@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="HzeroRelease" />
+      <option name="name" value="Hzero-Release Repository" />
+      <option name="url" value="http://nexus.saas.hand-china.com/content/repositories/Hzero-Release/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Hzero" />
+      <option name="name" value="Hzero Repository" />
+      <option name="url" value="https://nexus.saas.hand-china.com/repository/hzero/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="HandPublic" />
+      <option name="name" value="Hand-Public Repository" />
+      <option name="url" value="http://nexus.saas.hand-china.com/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="HzeroSnapshot" />
+      <option name="name" value="Hzero-Snapshot Repository" />
+      <option name="url" value="http://nexus.saas.hand-china.com/content/repositories/Hzero-Snapshot/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://nexus.saas.hand-china.com/repository/hzero/" />
+    </remote-repository>
+  </component>
+</project>

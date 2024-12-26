@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.IamDepartmentMapper">
+
+
+    <sql id = "BaseSql">
+        fid.department_id,
+        fid.attribute1,
+        fid.attribute10,
+        fid.attribute11,
+        fid.attribute12,
+        fid.attribute13,
+        fid.attribute14,
+        fid.attribute15,
+        fid.attribute2,
+        fid.attribute3,
+        fid.attribute4,
+        fid.attribute5,
+        fid.attribute6,
+        fid.attribute7,
+        fid.attribute8,
+        fid.attribute9,
+        fid.attribute_category,
+        fid.company_id,
+        fid.department_code,
+        fid.department_name,
+        fid.tenant_id,
+        fid.creation_date, 
+        fid.created_by, 
+        fid.last_updated_by, 
+        fid.last_update_date, 
+        fid.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.domain.entity.IamDepartment">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_iam_department fid
+        <where>
+            <if test="departmentId !=null">
+                and fid.department_id = #{departmentId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fid.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fid.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fid.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fid.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fid.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fid.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fid.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fid.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fid.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fid.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fid.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fid.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fid.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fid.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fid.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fid.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="companyId !=null">
+                and fid.company_id = #{companyId,jdbcType = INTEGER}
+            </if>
+            <if test="departmentCode !=null">
+                and fid.department_code = #{departmentCode,jdbcType = VARCHAR}
+            </if>
+            <if test="departmentName !=null">
+                and fid.department_name = #{departmentName,jdbcType = VARCHAR}
+            </if>
+            <if test="tenantId !=null">
+                and fid.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>
+

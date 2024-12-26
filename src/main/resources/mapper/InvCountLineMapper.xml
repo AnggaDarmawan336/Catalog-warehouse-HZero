@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.InvCountLineMapper">
+
+
+    <sql id = "BaseSql">
+        ficl.count_line_id,
+        ficl.attribute1,
+        ficl.attribute10,
+        ficl.attribute11,
+        ficl.attribute12,
+        ficl.attribute13,
+        ficl.attribute14,
+        ficl.attribute15,
+        ficl.attribute2,
+        ficl.attribute3,
+        ficl.attribute4,
+        ficl.attribute5,
+        ficl.attribute6,
+        ficl.attribute7,
+        ficl.attribute8,
+        ficl.attribute9,
+        ficl.attribute_category,
+        ficl.batch_id,
+        ficl.count_header_id,
+        ficl.counter_ids,
+        ficl.line_number,
+        ficl.material_id,
+        ficl.remark,
+        ficl.snapshot_unit_qty,
+        ficl.tenant_id,
+        ficl.unit_code,
+        ficl.unit_diff_qty,
+        ficl.unit_qty,
+        ficl.warehouse_id,
+        ficl.creation_date, 
+        ficl.created_by, 
+        ficl.last_updated_by, 
+        ficl.last_update_date, 
+        ficl.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.api.dto.InvCountLineDTO">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_inv_count_line ficl
+        <where>
+            <if test="countLineId !=null">
+                and ficl.count_line_id = #{countLineId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and ficl.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and ficl.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and ficl.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and ficl.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and ficl.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and ficl.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and ficl.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and ficl.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and ficl.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and ficl.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and ficl.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and ficl.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and ficl.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and ficl.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and ficl.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and ficl.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="batchId !=null">
+                and ficl.batch_id = #{batchId,jdbcType = INTEGER}
+            </if>
+            <if test="countHeaderId !=null">
+                and ficl.count_header_id = #{countHeaderId,jdbcType = INTEGER}
+            </if>
+            <if test="counterIds !=null">
+                and ficl.counter_ids = #{counterIds,jdbcType = VARCHAR}
+            </if>
+            <if test="lineNumber !=null">
+                and ficl.line_number = #{lineNumber,jdbcType = INTEGER}
+            </if>
+            <if test="materialId !=null">
+                and ficl.material_id = #{materialId,jdbcType = INTEGER}
+            </if>
+            <if test="remark !=null">
+                and ficl.remark = #{remark,jdbcType = VARCHAR}
+            </if>
+            <if test="snapshotUnitQty !=null">
+                and ficl.snapshot_unit_qty = #{snapshotUnitQty,jdbcType = OTHER}
+            </if>
+            <if test="tenantId !=null">
+                and ficl.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+            <if test="unitCode !=null">
+                and ficl.unit_code = #{unitCode,jdbcType = VARCHAR}
+            </if>
+            <if test="unitDiffQty !=null">
+                and ficl.unit_diff_qty = #{unitDiffQty,jdbcType = OTHER}
+            </if>
+            <if test="unitQty !=null">
+                and ficl.unit_qty = #{unitQty,jdbcType = OTHER}
+            </if>
+            <if test="warehouseId !=null">
+                and ficl.warehouse_id = #{warehouseId,jdbcType = INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>
+

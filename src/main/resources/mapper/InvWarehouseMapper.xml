@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.InvWarehouseMapper">
+
+
+    <sql id = "BaseSql">
+        fiw.warehouse_id,
+        fiw.attribute1,
+        fiw.attribute10,
+        fiw.attribute11,
+        fiw.attribute12,
+        fiw.attribute13,
+        fiw.attribute14,
+        fiw.attribute15,
+        fiw.attribute2,
+        fiw.attribute3,
+        fiw.attribute4,
+        fiw.attribute5,
+        fiw.attribute6,
+        fiw.attribute7,
+        fiw.attribute8,
+        fiw.attribute9,
+        fiw.attribute_category,
+        fiw.company_id,
+        fiw.is_wms_warehouse,
+        fiw.tenant_id,
+        fiw.warehouse_code,
+        fiw.creation_date, 
+        fiw.created_by, 
+        fiw.last_updated_by, 
+        fiw.last_update_date, 
+        fiw.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.api.dto.InvWarehouseDTO">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_inv_warehouse fiw
+        <where>
+            <if test="warehouseId !=null">
+                and fiw.warehouse_id = #{warehouseId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fiw.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fiw.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fiw.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fiw.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fiw.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fiw.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fiw.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fiw.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fiw.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fiw.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fiw.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fiw.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fiw.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fiw.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fiw.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fiw.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="companyId !=null">
+                and fiw.company_id = #{companyId,jdbcType = INTEGER}
+            </if>
+            <if test="isWmsWarehouse !=null">
+                and fiw.is_wms_warehouse = #{isWmsWarehouse,jdbcType = INTEGER}
+            </if>
+            <if test="tenantId !=null">
+                and fiw.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+            <if test="warehouseCode !=null">
+                and fiw.warehouse_code = #{warehouseCode,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>
+

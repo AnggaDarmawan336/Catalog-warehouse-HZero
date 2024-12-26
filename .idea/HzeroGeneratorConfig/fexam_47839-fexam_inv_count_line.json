@@ -1,0 +1,323 @@
+{
+  "name" : "FexamInvCountLine",
+  "preName" : "fexam_",
+  "modifyPreName" : "",
+  "comment" : "",
+  "templateGroupName" : "Default",
+  "fullColumn" : [ {
+    "name" : "countLineId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "attribute1",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute10",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute11",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute12",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute13",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute14",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute15",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute2",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute3",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute4",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute5",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute6",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute7",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute8",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attribute9",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "attributeCategory",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 30,
+    "ext" : { }
+  }, {
+    "name" : "batchId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "countHeaderId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "counterIds",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : -1,
+    "ext" : { }
+  }, {
+    "name" : "createdBy",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "creationDate",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "lastUpdateDate",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "lastUpdatedBy",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "lineNumber",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "materialId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "objectVersionNumber",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "remark",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "snapshotUnitQty",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "tenantId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "unitCode",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 255,
+    "ext" : { }
+  }, {
+    "name" : "unitDiffQty",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "unitQty",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  }, {
+    "name" : "warehouseId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 0,
+    "ext" : { }
+  } ],
+  "pkColumn" : null,
+  "otherColumn" : null,
+  "savePackageName" : "com.hand.demo",
+  "savePath" : "./src/main/java/com/hand/demo",
+  "saveModelName" : "fexam-xxxxx",
+  "author" : "Angga",
+  "level" : "tenant",
+  "fullColumnQuery" : true,
+  "useLombok" : true
+}

@@ -1,0 +1,98 @@
+{
+  "name" : "TodoUser",
+  "preName" : "todo_",
+  "modifyPreName" : "",
+  "comment" : "用户表",
+  "templateGroupName" : "Default",
+  "fullColumn" : [ {
+    "name" : "id",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 20,
+    "ext" : { }
+  }, {
+    "name" : "employeeName",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 30,
+    "ext" : { }
+  }, {
+    "name" : "employeeNumber",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 30,
+    "ext" : { }
+  }, {
+    "name" : "email",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : true,
+    "length" : 60,
+    "ext" : { }
+  }, {
+    "name" : "objectVersionNumber",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 20,
+    "ext" : { }
+  }, {
+    "name" : "creationDate",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : -1,
+    "ext" : { }
+  }, {
+    "name" : "createdBy",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 20,
+    "ext" : { }
+  }, {
+    "name" : "lastUpdatedBy",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : 20,
+    "ext" : { }
+  }, {
+    "name" : "lastUpdateDate",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "nullAble" : false,
+    "length" : -1,
+    "ext" : { }
+  } ],
+  "pkColumn" : null,
+  "otherColumn" : null,
+  "savePackageName" : "com.hand.demo",
+  "savePath" : "./src/main/java/com/hand/demo",
+  "saveModelName" : "demo",
+  "author" : "shaoqin.zhou@hand-china.com",
+  "level" : "tenant",
+  "fullColumnQuery" : true,
+  "useLombok" : true
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.InvStockMapper">
+
+
+    <sql id = "BaseSql">
+        fis.stock_id,
+        fis.attribute1,
+        fis.attribute10,
+        fis.attribute11,
+        fis.attribute12,
+        fis.attribute13,
+        fis.attribute14,
+        fis.attribute15,
+        fis.attribute2,
+        fis.attribute3,
+        fis.attribute4,
+        fis.attribute5,
+        fis.attribute6,
+        fis.attribute7,
+        fis.attribute8,
+        fis.attribute9,
+        fis.attribute_category,
+        fis.available_quantity,
+        fis.batch_id,
+        fis.company_id,
+        fis.department_id,
+        fis.material_code,
+        fis.material_id,
+        fis.tenant_id,
+        fis.unit_code,
+        fis.unit_quantity,
+        fis.warehouse_id,
+        fis.creation_date, 
+        fis.created_by, 
+        fis.last_updated_by, 
+        fis.last_update_date, 
+        fis.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.domain.entity.InvStock">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_inv_stock fis
+        <where>
+            <if test="stockId !=null">
+                and fis.stock_id = #{stockId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fis.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fis.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fis.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fis.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fis.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fis.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fis.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fis.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fis.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fis.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fis.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fis.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fis.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fis.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fis.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fis.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="availableQuantity !=null">
+                and fis.available_quantity = #{availableQuantity,jdbcType = OTHER}
+            </if>
+            <if test="batchId !=null">
+                and fis.batch_id = #{batchId,jdbcType = INTEGER}
+            </if>
+            <if test="companyId !=null">
+                and fis.company_id = #{companyId,jdbcType = INTEGER}
+            </if>
+            <if test="departmentId !=null">
+                and fis.department_id = #{departmentId,jdbcType = INTEGER}
+            </if>
+            <if test="materialCode !=null">
+                and fis.material_code = #{materialCode,jdbcType = VARCHAR}
+            </if>
+            <if test="materialId !=null">
+                and fis.material_id = #{materialId,jdbcType = INTEGER}
+            </if>
+            <if test="tenantId !=null">
+                and fis.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+            <if test="unitCode !=null">
+                and fis.unit_code = #{unitCode,jdbcType = VARCHAR}
+            </if>
+            <if test="unitQuantity !=null">
+                and fis.unit_quantity = #{unitQuantity,jdbcType = OTHER}
+            </if>
+            <if test="warehouseId !=null">
+                and fis.warehouse_id = #{warehouseId,jdbcType = INTEGER}
+            </if>
+            <if test="materialIds != null" >
+                and fis.material_id = #{materialIds,jdbcType = VARCHAR}
+            </if>
+            <if test="batchIds != null" >
+                and fis.batch_id = #{batchIds,jdbcType = VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>
+

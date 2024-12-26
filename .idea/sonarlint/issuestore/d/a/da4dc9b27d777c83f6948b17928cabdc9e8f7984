@@ -1,0 +1,13 @@
+
+d
+java:S6830"GRename this bean to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™òÕã8éžŠú¨2
+p
+java:S1128"SRemove this unused import 'io.choerodon.mybatis.pagehelper.annotation.SortDefault'.(·ú½Õ8¾Ô®¥©2
+e
+java:S1128	"HRemove this unused import 'io.choerodon.mybatis.pagehelper.domain.Sort'.(’Ø†Ø8¿Ô®¥©2
+u
+java:S1128"SRemove this unused import 'org.springframework.beans.factory.annotation.Autowired'.(¡ž¸Îùÿÿÿÿ8¿Ô®¥©2
+l
+java:S1128"JRemove this unused import 'springfox.documentation.annotations.ApiIgnore'.(µâ¤›ùÿÿÿÿ8¿Ô®¥©2
+M
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8¿Ô®¥©2

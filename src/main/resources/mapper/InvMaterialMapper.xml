@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.InvMaterialMapper">
+
+
+    <sql id = "BaseSql">
+        fim.material_id,
+        fim.attribute1,
+        fim.attribute10,
+        fim.attribute11,
+        fim.attribute12,
+        fim.attribute13,
+        fim.attribute14,
+        fim.attribute15,
+        fim.attribute2,
+        fim.attribute3,
+        fim.attribute4,
+        fim.attribute5,
+        fim.attribute6,
+        fim.attribute7,
+        fim.attribute8,
+        fim.attribute9,
+        fim.attribute_category,
+        fim.base_unit_code,
+        fim.category_code,
+        fim.material_code,
+        fim.material_name,
+        fim.specification,
+        fim.tenant_id,
+        fim.creation_date, 
+        fim.created_by, 
+        fim.last_updated_by, 
+        fim.last_update_date, 
+        fim.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.domain.entity.InvMaterial">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_inv_material fim
+        <where>
+            <if test="materialId !=null">
+                and fim.material_id = #{materialId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fim.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fim.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fim.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fim.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fim.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fim.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fim.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fim.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fim.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fim.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fim.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fim.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fim.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fim.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fim.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fim.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="baseUnitCode !=null">
+                and fim.base_unit_code = #{baseUnitCode,jdbcType = VARCHAR}
+            </if>
+            <if test="categoryCode !=null">
+                and fim.category_code = #{categoryCode,jdbcType = VARCHAR}
+            </if>
+            <if test="materialCode !=null">
+                and fim.material_code = #{materialCode,jdbcType = VARCHAR}
+            </if>
+            <if test="materialName !=null">
+                and fim.material_name = #{materialName,jdbcType = VARCHAR}
+            </if>
+            <if test="specification !=null">
+                and fim.specification = #{specification,jdbcType = VARCHAR}
+            </if>
+            <if test="tenantId !=null">
+                and fim.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>
+
