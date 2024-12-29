@@ -11,3 +11,4 @@ import java.math.BigDecimal;
 public class InvCountLineDTO extends InvCountLine {
 
 }
+

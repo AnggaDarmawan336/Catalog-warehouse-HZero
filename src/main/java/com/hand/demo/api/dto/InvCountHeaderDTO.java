@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hzero.boot.workflow.dto.RunTaskHistory;
 import org.hzero.common.HZeroCacheKey;
 import org.hzero.core.cache.CacheValue;
 import org.hzero.core.cache.Cacheable;
@@ -28,9 +29,9 @@ public class InvCountHeaderDTO extends InvCountHeader implements Cacheable {
 
     private List<UserDTO> supervisorIdList;
 
-    private List<InvMaterial> snapshotMaterialList;
+    private List<MaterialDTO> snapshotMaterialList;
 
-    private List<InvBatch> snapshotBatchList;
+    private List<BatchDTO> snapshotBatchList;
 
     private List<InvStock> stockList;
 
@@ -47,5 +48,9 @@ public class InvCountHeaderDTO extends InvCountHeader implements Cacheable {
     private String batchCode;
 
     private String status;
+
+    private Boolean isWMSWarehouse;
+
+    private List<RunTaskHistory> history;
 
 }

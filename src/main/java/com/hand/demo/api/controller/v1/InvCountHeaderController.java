@@ -2,7 +2,6 @@ package com.hand.demo.api.controller.v1;
 
 import com.hand.demo.api.dto.InvCountHeaderDTO;
 import com.hand.demo.api.dto.WorkFlowDTO;
-import com.hand.demo.domain.entity.InvStock;
 import com.hand.demo.infra.mapper.InvCountHeaderMapper;
 import io.choerodon.core.domain.Page;
 import io.choerodon.core.iam.ResourceLevel;
@@ -62,7 +61,9 @@ public class InvCountHeaderController extends BaseController {
     @Permission(level = ResourceLevel.ORGANIZATION)
     @GetMapping("/detail")
     @ProcessCacheValue
-    public ResponseEntity <InvCountHeaderDTO> detail(@RequestBody @SortDefault(value = InvCountHeaderDTO.FIELD_CREATION_DATE) Long countHeaderId) {
+    @ProcessLovValue(targetField = BaseConstants.FIELD_BODY)
+    public ResponseEntity <InvCountHeaderDTO> detail(@RequestBody @SortDefault(value = InvCountHeaderDTO.FIELD_CREATION_DATE,
+            direction = Sort.Direction.DESC) Long countHeaderId) {
         InvCountHeaderDTO invCountHeader = invCountHeaderService.detail(countHeaderId);
         return Results.success(invCountHeader);
     }
@@ -73,10 +74,10 @@ public class InvCountHeaderController extends BaseController {
     @ProcessLovValue(targetField = BaseConstants.FIELD_BODY)
     public ResponseEntity<List<InvCountHeaderDTO>> orderSave(@PathVariable Long organizationId, @RequestBody List<InvCountHeaderDTO> invCountHeader) {
         validList(invCountHeader, InvCountHeader.validateCreate.class);
-//        SecurityTokenHelper.validTokenIgnoreInsert(invCountHeader);
+        SecurityTokenHelper.validTokenIgnoreInsert(invCountHeader);
 
         invCountHeader.forEach(item -> item.setTenantId(organizationId));
-        invCountHeaderService.orderSave(invCountHeader);
+        invCountHeaderService.manualSave(invCountHeader);
         return Results.success(invCountHeader);
     }
 

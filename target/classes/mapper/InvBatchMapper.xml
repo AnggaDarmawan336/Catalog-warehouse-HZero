@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.InvBatchMapper">
+
+
+    <sql id = "BaseSql">
+        fib.batch_id,
+        fib.attribute1,
+        fib.attribute10,
+        fib.attribute11,
+        fib.attribute12,
+        fib.attribute13,
+        fib.attribute14,
+        fib.attribute15,
+        fib.attribute2,
+        fib.attribute3,
+        fib.attribute4,
+        fib.attribute5,
+        fib.attribute6,
+        fib.attribute7,
+        fib.attribute8,
+        fib.attribute9,
+        fib.attribute_category,
+        fib.batch_code,
+        fib.tenant_id,
+        fib.creation_date, 
+        fib.created_by, 
+        fib.last_updated_by, 
+        fib.last_update_date, 
+        fib.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.domain.entity.InvBatch">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_inv_batch fib
+        <where>
+            <if test="batchId !=null">
+                and fib.batch_id = #{batchId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fib.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fib.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fib.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fib.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fib.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fib.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fib.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fib.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fib.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fib.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fib.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fib.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fib.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fib.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fib.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fib.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="batchCode !=null">
+                and fib.batch_code = #{batchCode,jdbcType = VARCHAR}
+            </if>
+            <if test="tenantId !=null">
+                and fib.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>
+

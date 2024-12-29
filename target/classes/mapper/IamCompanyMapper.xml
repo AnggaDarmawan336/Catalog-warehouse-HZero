@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hand.demo.infra.mapper.IamCompanyMapper">
+
+
+    <sql id = "BaseSql">
+        fic.company_id,
+        fic.attribute1,
+        fic.attribute10,
+        fic.attribute11,
+        fic.attribute12,
+        fic.attribute13,
+        fic.attribute14,
+        fic.attribute15,
+        fic.attribute2,
+        fic.attribute3,
+        fic.attribute4,
+        fic.attribute5,
+        fic.attribute6,
+        fic.attribute7,
+        fic.attribute8,
+        fic.attribute9,
+        fic.attribute_category,
+        fic.company_code,
+        fic.company_name,
+        fic.tenant_id,
+        fic.creation_date, 
+        fic.created_by, 
+        fic.last_updated_by, 
+        fic.last_update_date, 
+        fic.object_version_number
+    </sql>
+
+    <select id = "selectList" resultType = "com.hand.demo.domain.entity.IamCompany">
+        select
+        <include refid = "BaseSql"/>
+        from fexam_iam_company fic
+        <where>
+            <if test="companyId !=null">
+                and fic.company_id = #{companyId,jdbcType = INTEGER}
+            </if>
+            <if test="attribute1 !=null">
+                and fic.attribute1 = #{attribute1,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute10 !=null">
+                and fic.attribute10 = #{attribute10,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute11 !=null">
+                and fic.attribute11 = #{attribute11,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute12 !=null">
+                and fic.attribute12 = #{attribute12,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute13 !=null">
+                and fic.attribute13 = #{attribute13,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute14 !=null">
+                and fic.attribute14 = #{attribute14,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute15 !=null">
+                and fic.attribute15 = #{attribute15,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute2 !=null">
+                and fic.attribute2 = #{attribute2,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute3 !=null">
+                and fic.attribute3 = #{attribute3,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute4 !=null">
+                and fic.attribute4 = #{attribute4,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute5 !=null">
+                and fic.attribute5 = #{attribute5,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute6 !=null">
+                and fic.attribute6 = #{attribute6,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute7 !=null">
+                and fic.attribute7 = #{attribute7,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute8 !=null">
+                and fic.attribute8 = #{attribute8,jdbcType = VARCHAR}
+            </if>
+            <if test="attribute9 !=null">
+                and fic.attribute9 = #{attribute9,jdbcType = VARCHAR}
+            </if>
+            <if test="attributeCategory !=null">
+                and fic.attribute_category = #{attributeCategory,jdbcType = VARCHAR}
+            </if>
+            <if test="companyCode !=null">
+                and fic.company_code = #{companyCode,jdbcType = VARCHAR}
+            </if>
+            <if test="companyName !=null">
+                and fic.company_name = #{companyName,jdbcType = VARCHAR}
+            </if>
+            <if test="tenantId !=null">
+                and fic.tenant_id = #{tenantId,jdbcType = INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>
+
