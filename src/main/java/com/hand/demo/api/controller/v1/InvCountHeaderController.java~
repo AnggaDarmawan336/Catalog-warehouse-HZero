@@ -96,7 +96,7 @@ public class InvCountHeaderController extends BaseController {
     @PostMapping("/execute")
     public ResponseEntity<?> orderExecution(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
         validList(invCountHeaders, InvCountHeader.validateExecute.class, InvCountHeader.validateCreate.class);
-        SecurityTokenHelper.validTokenIgnoreInsert(invCountHeaders);
+        SecurityTokenHelper.validToken(invCountHeaders);
         invCountHeaderService.orderExecution(invCountHeaders);
         return Results.success(invCountHeaders);
     }

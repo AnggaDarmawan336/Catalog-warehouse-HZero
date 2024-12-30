@@ -251,7 +251,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
             // For Error
             invCountInfoDTO.setFailedList(invCountHeaderDTO);
-            invCountInfoDTO.setTotalErrorMsg(errorMessage.substring(0, errorMessage.length() - 1));
+            invCountInfoDTO.setTotalErrorMsg(errorMessage.toString());
             return invCountInfoDTO;
         }
         invCountInfoDTO.setSuccessList(invCountHeaderDTO);
@@ -438,12 +438,12 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             if (header.getStockList() != null) {
                 try {
                     Condition condition = new Condition(InvStock.class);
-                    condition.createCriteria().andEqualTo("tenantId", header.getTenantId());
-                    condition.and().andEqualTo("companyId", header.getCompanyId());
-                    condition.and().andEqualTo("departmentId", header.getDepartmentId());
-                    condition.and().andEqualTo("warehouseId", header.getWarehouseId());
-                    condition.and().andEqualTo("snapshotMaterialIds", header.getSnapshotMaterialIds());
-                    condition.and().andEqualTo("snapshotBatchIds", header.getSnapshotBatchIds());
+                    condition.createCriteria().andEqualTo(InvStock.FIELD_TENANT_ID, header.getTenantId());
+                    condition.and().andEqualTo(InvStock.FIELD_COMPANY_ID, header.getCompanyId());
+                    condition.and().andEqualTo(InvStock.FIELD_DEPARTMENT_ID, header.getDepartmentId());
+                    condition.and().andEqualTo(InvStock.FIELD_WAREHOUSE_ID, header.getWarehouseId());
+                    condition.and().andEqualTo(InvStock.FIELD_MATERIAL_ID, header.getSnapshotMaterialIds());
+                    condition.and().andEqualTo(InvStock.FIELD_BATCH_ID, header.getSnapshotBatchIds());
                     condition.and().andGreaterThan(InvStock.FIELD_AVAILABLE_QUANTITY, 0);
 
                     invStockRepository.selectByCondition(condition);
@@ -486,16 +486,6 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
     @Override
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public List<InvCountHeaderDTO> execute(List<InvCountHeaderDTO> invCountHeaderDTO){
-//        InvCountInfoDTO invCountInfoDTO = new InvCountInfoDTO();
-
-        // Execute Check
-//        InvCountInfoDTO executeCheck = executeCheck(invCountHeaderDTO);
-//        if (executeCheck != null && executeCheck.getFailedList() != null && !executeCheck.getFailedList().isEmpty()) {
-//            // If there are failed items, set them in invCountInfoDTO
-//            invCountInfoDTO.setFailedList(executeCheck.getFailedList());
-//            throw new CommonException("Validation failed: " + executeCheck.getTotalErrorMsg());
-//        }
-
         // Get Data Header
         List<InvCountHeaderDTO> headerDTO = invCountHeaderDTO.stream()
              .filter(line -> line.getCountHeaderId() != null)
@@ -508,8 +498,9 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         ResponseEntity<String> stringResponseEntity = iamRemoteService.selectSelf();
         ObjectMapper objectMapper = new ObjectMapper();
 
+        // TODO jika tidak perlu dihapus aja
         // Format Date from String to Date
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         objectMapper.setDateFormat(dateFormat);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(new JavaTimeModule());
@@ -526,49 +517,44 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                  // To get InvStock
                  List<InvStockDTO> invStock = getInvStock(header);
 
-                 // Update Line
-                 if (CollectionUtils.isEmpty(header.getInvCountLines())) {
-                     List<InvCountLine> lineList = new ArrayList<>();
-                     int lineNumber = 1;
-                     for (InvStockDTO stock : invStock){
-                         InvCountLine line = new InvCountLine();
-                         line.setTenantId(tenantId);
-                         line.setCountHeaderId(header.getCountHeaderId());
-                         line.setCounterIds(header.getCounterIds());
-                         line.setLineNumber(lineNumber);
+                 // Insert Line
+                 List<InvCountLine> lineList = new ArrayList<>();
+                 int lineNumber = 1;
+                 for (InvStockDTO stock : invStock){
+                    InvCountLine line = new InvCountLine();
+                    line.setTenantId(tenantId);
+                    line.setCountHeaderId(header.getCountHeaderId());
+                    line.setCounterIds(header.getCounterIds());
+                    line.setLineNumber(lineNumber);
 
-                         line.setBatchId(stock.getBatchId());
-                         line.setMaterialId(stock.getMaterialId());
-                         line.setSnapshotUnitQty(stock.getSummary());
-                         line.setUnitCode(stock.getUnitCode());
-                         line.setWarehouseId(stock.getWarehouseId());
-                         lineNumber++;
+                    line.setBatchId(stock.getBatchId());
+                    line.setMaterialId(stock.getMaterialId());
+                    line.setSnapshotUnitQty(stock.getSummary());
+                    line.setUnitCode(stock.getUnitCode());
+                    line.setWarehouseId(stock.getWarehouseId());
+                    lineNumber++;
 
-                         lineList.add(line);
-                     }
-                     invCountLineRepository.batchInsertSelective(lineList);
-                 }
+                    lineList.add(line);
+                }
+                invCountLineRepository.batchInsertSelective(lineList);
 
-                 invCountHeaderRepository.updateOptional(header,
+                invCountHeaderRepository.updateOptional(header,
                          InvCountHeader.FIELD_COUNT_STATUS,
                          InvCountHeader.FIELD_TENANT_ID);
             }
         } catch (Exception e){
             throw new CommonException("Error processing headers: " + e.getMessage());
         }
-        // For Synchronization WMS
-//        InvCountInfoDTO orderSynchronization = countSyncWms(headerDTO);
-//        if (orderSynchronization.getFailedList() != null && !orderSynchronization.getFailedList().isEmpty()) {
-//            throw new CommonException("WMS synchronization failed: " + orderSynchronization.getTotalErrorMsg());
-//        }
     return headerDTO;
     }
 
     @Override
     public List<InvCountHeaderDTO> orderExecution(List<InvCountHeaderDTO> invCountHeaders) {
-        this.manualSaveCheck(invCountHeaders);
+        // TODO untuk yang check karena return nya inCountInfo harus di consider
+
+        this.manualSaveCheck(invCountHeaders).getSuccessList();
         this.manualSave(invCountHeaders);
-        this.executeCheck(invCountHeaders);
+        this.executeCheck(invCountHeaders).getSuccessList();
         this.execute(invCountHeaders);
         this.countSyncWms(invCountHeaders);
         return invCountHeaders;
@@ -579,39 +565,46 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
     public InvCountInfoDTO countSyncWms(List<InvCountHeaderDTO> invCountHeaders) {
         InvCountInfoDTO invCountInfo = new InvCountInfoDTO();
 
+        List<InvCountHeaderDTO> successList = new ArrayList<>();
+        List<InvCountHeaderDTO> failedList = new ArrayList<>();
+        StringBuilder totalErrorMsg = new StringBuilder();
+
         // Loop through each header
         for (InvCountHeaderDTO invCountHeaderDTO : invCountHeaders) {
-            String errorMessage = "";
+            StringBuilder errorMessage = new StringBuilder();
 
             //check and set warehouse
             InvWarehouse invWarehouse = new InvWarehouse();
             invWarehouse.setTenantId(invCountHeaderDTO.getTenantId());
             invWarehouse.setWarehouseId(invCountHeaderDTO.getWarehouseId());
 
+            // a. Determine whether the warehouse data exists by tenantId and warehouseCode
             List<InvWarehouse> invWarehouseList = invWarehouseRepository.selectList(invWarehouse);
             if (CollectionUtils.isEmpty(invWarehouseList)) {
-                errorMessage = errorMessage + "Warehouse validation: warehouse not found !" + ",";
+                failedList.add(invCountHeaderDTO);
+                totalErrorMsg.append(errorMessage).append("\n");
             }
 
-            // Set extra too
+            Condition condition = new Condition(InvCountExtra.class);
+            condition.createCriteria().andEqualTo("sourceId", invCountHeaderDTO.getCountHeaderId());
+
+            // b. Get the extended table data based on the counting header ID
+            List<InvCountExtra> existingExtra = invCountExtraRepository.selectByCondition(condition);
+
+            // Fetch Data for syncStatusExtra
+            InvCountExtra syncStatusExtra = existingExtra.stream()
+                    .filter(extra -> "wms_sync_status".equals(extra.getProgramKey()))
+                    .findFirst()
+                    .orElseGet(() -> createInvCountExtra(invCountHeaderDTO, "wms_sync_status"));
+
+            // Fetch Data for syncMsgExtra
+            InvCountExtra syncMsgExtra = existingExtra.stream()
+                    .filter(extra -> "wms_sync_error_message".equals(extra.getProgramKey()))
+                    .findFirst()
+                    .orElseGet(() -> createInvCountExtra(invCountHeaderDTO, "wms_sync_error_message"));
+
             if (!CollectionUtils.isEmpty(invWarehouseList)) {
-                // Initiate extra status [S]
-                InvCountExtra syncStatusExtra = new InvCountExtra();
-                syncStatusExtra.setSourceId(invCountHeaderDTO.getCountHeaderId());
-                syncStatusExtra.setTenantId(invCountHeaderDTO.getTenantId());
-                syncStatusExtra.setEnabledFlag(1);
-                syncStatusExtra.setProgramKey("wms_sync_status");
-
-                //initiate extra status [E]
-                //initiate extra message [S]
-                InvCountExtra syncMsgExtra = new InvCountExtra();
-                syncMsgExtra.setSourceId(invCountHeaderDTO.getCountHeaderId());
-                syncMsgExtra.setTenantId(invCountHeaderDTO.getTenantId());
-                syncMsgExtra.setEnabledFlag(1);
-                syncMsgExtra.setProgramKey("wms_sync_error_message");
-
-                //initiate extra message [E]
-                //get WMS Warehouse status [S]
+                //get WMS Warehouse status
                 int isWmsWarehouse = invWarehouseList.stream()
                         .filter(value -> value.getWarehouseId().equals(invCountHeaderDTO.getWarehouseId())) // Filter by warehouseID
                         .mapToInt(InvWarehouse::getIsWmsWarehouse) // Map to the isWmsWarehouse (int value)
@@ -647,29 +640,50 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                         // The Logic for Success and Failed
                         if (response.get("returnStatus").equals("S")) {
                             syncStatusExtra.setProgramValue("SUCCESS");
+                            syncMsgExtra.setProgramValue("");
                             invCountHeaderDTO.setRelatedWmsOrderCode(responsePayloadDTO.getPayload());
-                        } else {
-                            syncStatusExtra.setProgramValue("FAILED");
+
+                            successList.add(invCountHeaderDTO);
+                        } else  {
+                            syncStatusExtra.setProgramValue("ERROR");
                             syncMsgExtra.setProgramValue(response.get("returnMsg"));
-                            errorMessage = errorMessage + "Response Exception : " + response.get("returnMsg") + ",";
+
+                            errorMessage.append(response.get("returnMsg"));
+                            failedList.add(invCountHeaderDTO);
+                            totalErrorMsg.append(errorMessage);
                         }
                     } catch (Exception e) {
-                        throw new RuntimeException(e.getMessage());
+                        syncStatusExtra.setProgramValue("FAILED");
+                        syncMsgExtra.setProgramValue(e.getMessage());
+                        errorMessage.append("Error during WMS sync: " + e.getMessage());
+                        failedList.add(invCountHeaderDTO);
+                        totalErrorMsg.append(errorMessage);
                     }
                 } else {
                     // For Skip
                     syncStatusExtra.setProgramValue("SKIP");
-                }
-                invCountExtraRepository.insertSelective(syncStatusExtra);
+                    syncMsgExtra.setProgramValue("");
 
-                if (!errorMessage.isEmpty()) {
-                    invCountInfo.setFailedList(invCountHeaders);
-                    invCountInfo.setTotalErrorMsg(errorMessage);
-                    return invCountInfo;
+                    successList.add(invCountHeaderDTO);
+                }
+
+                // Insert or update sync status extra
+                if (syncStatusExtra.getExtraInfoId() == null) {
+                    invCountExtraRepository.insertSelective(syncStatusExtra);
+                    invCountExtraRepository.insertSelective(syncMsgExtra);
+                } else {
+                    invCountExtraRepository.updateOptional(syncStatusExtra,
+                            InvCountExtra.FIELD_PROGRAM_VALUE);
+                    invCountExtraRepository.updateOptional(syncMsgExtra,
+                            InvCountExtra.FIELD_PROGRAM_VALUE);
                 }
             }
         }
-        invCountInfo.setSuccessList(invCountHeaders);
+
+        invCountInfo.setFailedList(failedList);
+        invCountInfo.setTotalErrorMsg(String.valueOf(totalErrorMsg));
+        invCountInfo.setSuccessList(successList);
+
         return invCountInfo;
     }
 
@@ -830,7 +844,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                 // To get the User by DetailsHelper
                 Map<String, Object> variableMap = new HashMap<>();
                 String starter = Constants.WORKFLOW_DEFAULT_DIMENSION.equals("USER") ?
-                        DetailsHelper.getUserDetails().getUserId().toString() :
+                        String.valueOf(DetailsHelper.getUserDetails().getUserId()) :
                         DetailsHelper.getUserDetails().getUsername();
 
                 // To put the Department Code
@@ -997,7 +1011,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
     private List<InvStockDTO> getInvStock(InvCountHeaderDTO header) {
 
-        // Get the InvStock
+        // Set the InvStock
         InvStockDTO invStock = new InvStockDTO();
         invStock.setTenantId(header.getTenantId());
         invStock.setDepartmentId(header.getDepartmentId());
@@ -1006,6 +1020,8 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
         // Get Dimension
         String dimension = header.getCountDimension();
+
+        // TODO : bukan seperti ini, dibaca kembali di document
         if (dimension.equals("SKU")){
             // get Data Material ID and change it to Long
             invStock.setMaterialIdLongList(Arrays.stream(header.getSnapshotMaterialIds()
@@ -1102,5 +1118,15 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                 throw new CommonException("Unable to query on hand quantity data");
             }
         }
+    }
+
+    private InvCountExtra createInvCountExtra(InvCountHeaderDTO invCountHeaderDTO, String programKey) {
+        InvCountExtra invCountExtra = new InvCountExtra();
+        invCountExtra.setSourceId(invCountHeaderDTO.getCountHeaderId());
+        invCountExtra.setTenantId(invCountHeaderDTO.getTenantId());
+        invCountExtra.setEnabledFlag(1);
+        invCountExtra.setProgramKey(programKey);
+        invCountExtra.setProgramValue("");
+        return invCountExtra;
     }
 }

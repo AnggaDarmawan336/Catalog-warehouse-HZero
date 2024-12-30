@@ -1,0 +1,17 @@
+package com.hand.demo;
+
+import com.hand.demo.domain.entity.InvStock;
+import com.hand.demo.domain.repository.InvStockRepository;
+import com.hand.demo.infra.repository.impl.InvStockRepositoryImpl;
+import org.hzero.mybatis.domian.Condition;
+
+public class Test {
+    public static void main(String[] args) {
+        Condition condition = Condition.builder(InvStock.class).build();
+        condition.createCriteria().andEqualTo("tenantId", 0L);
+        condition.and().andEqualTo("companyId",12L);
+        condition.and().andGreaterThan(InvStock.FIELD_AVAILABLE_QUANTITY, 0);
+        InvStockRepository repository=new InvStockRepositoryImpl();
+        repository.selectByCondition(condition);
+    }
+}
