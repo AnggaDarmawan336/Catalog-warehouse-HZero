@@ -86,7 +86,7 @@ public class InvCountHeaderController extends BaseController {
     @ProcessLovValue(targetField = BaseConstants.FIELD_BODY)
     @DeleteMapping
     public ResponseEntity<?> orderRemove(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
-//        SecurityTokenHelper.validToken(invCountHeaders);
+        SecurityTokenHelper.validToken(invCountHeaders);
         invCountHeaderService.checkAndRemove(invCountHeaders);
         return Results.success("Delete Successfully!");
     }
@@ -95,9 +95,9 @@ public class InvCountHeaderController extends BaseController {
     @Permission(level = ResourceLevel.ORGANIZATION)
     @PostMapping("/execute")
     public ResponseEntity<?> orderExecution(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
-        validList(invCountHeaders, InvCountHeader.validateExecute.class);
-//        SecurityTokenHelper.validToken(invCountHeaders);
-        invCountHeaderService.execute(invCountHeaders);
+        validList(invCountHeaders, InvCountHeader.validateExecute.class, InvCountHeader.validateCreate.class);
+        SecurityTokenHelper.validToken(invCountHeaders);
+        invCountHeaderService.orderExecution(invCountHeaders);
         return Results.success(invCountHeaders);
     }
 
@@ -105,7 +105,7 @@ public class InvCountHeaderController extends BaseController {
     @Permission(level = ResourceLevel.ORGANIZATION)
     @PostMapping("/result-synchronous")
     public ResponseEntity<?> countResultSync(@RequestBody InvCountHeaderDTO invCountHeaders) {
-//        SecurityTokenHelper.validToken(invCountHeaders);
+        SecurityTokenHelper.validToken(invCountHeaders);
         invCountHeaderService.countResultSync(invCountHeaders);
         return Results.success(invCountHeaders);
     }
@@ -114,7 +114,7 @@ public class InvCountHeaderController extends BaseController {
     @Permission(level = ResourceLevel.ORGANIZATION)
     @PostMapping("/order-submit")
     public ResponseEntity<?> orderSubmit(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
-//        SecurityTokenHelper.validToken(invCountHeaders);
+        SecurityTokenHelper.validToken(invCountHeaders);
         invCountHeaderService.submit(invCountHeaders);
         return Results.success(invCountHeaders);
     }

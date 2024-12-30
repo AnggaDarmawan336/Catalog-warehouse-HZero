@@ -595,22 +595,23 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
             // Set extra too
             if (!CollectionUtils.isEmpty(invWarehouseList)) {
-                // Initiate Sync Status Extra
+                // Initiate extra status [S]
                 InvCountExtra syncStatusExtra = new InvCountExtra();
                 syncStatusExtra.setSourceId(invCountHeaderDTO.getCountHeaderId());
                 syncStatusExtra.setTenantId(invCountHeaderDTO.getTenantId());
                 syncStatusExtra.setEnabledFlag(1);
                 syncStatusExtra.setProgramKey("wms_sync_status");
 
-                // Initiate Sync Msg Extra
+                //initiate extra status [E]
+                //initiate extra message [S]
                 InvCountExtra syncMsgExtra = new InvCountExtra();
                 syncMsgExtra.setSourceId(invCountHeaderDTO.getCountHeaderId());
                 syncMsgExtra.setTenantId(invCountHeaderDTO.getTenantId());
                 syncMsgExtra.setEnabledFlag(1);
                 syncMsgExtra.setProgramKey("wms_sync_error_message");
 
-
-                //get WMS Warehouse status
+                //initiate extra message [E]
+                //get WMS Warehouse status [S]
                 int isWmsWarehouse = invWarehouseList.stream()
                         .filter(value -> value.getWarehouseId().equals(invCountHeaderDTO.getWarehouseId())) // Filter by warehouseID
                         .mapToInt(InvWarehouse::getIsWmsWarehouse) // Map to the isWmsWarehouse (int value)
@@ -650,7 +651,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                         } else {
                             syncStatusExtra.setProgramValue("FAILED");
                             syncMsgExtra.setProgramValue(response.get("returnMsg"));
-                            errorMessage = errorMessage + "Response Exception : " + response.get("returnMsg");
+                            errorMessage = errorMessage + "Response Exception : " + response.get("returnMsg") + ",";
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(e.getMessage());

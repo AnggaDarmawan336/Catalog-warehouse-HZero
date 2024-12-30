@@ -25,7 +25,7 @@ public class Utils {
     public ResponsePayloadDTO invokeInterface(String namespace,
                                               String serverCode,
                                               String interfaceCode,
-                                              String jsonString, Object o, Object object, MediaType applicationJson){
+                                              String jsonString,  MediaType applicationJson){
 
         RequestPayloadDTO requestPayLoadDTO = new RequestPayloadDTO();
         requestPayLoadDTO.setPayload(jsonString);
