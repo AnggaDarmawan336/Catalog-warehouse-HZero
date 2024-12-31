@@ -1057,27 +1057,6 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         return "DRAFT".equals(status) || "INCOUNTING".equals(status) || "REJECTED".equals(status) || "WITHDRAWN".equals(status);
     }
 
-    // Method for processing lines
-    private void processLines(List<InvCountLine> lines, Long countHeaderId) {
-        List<InvCountLine> linesToInsert = new ArrayList<>();
-        List<InvCountLine> linesToUpdate = new ArrayList<>();
-
-        for (InvCountLine line : lines) {
-            if (line.getCountLineId() != null) {
-                linesToUpdate.add(line);
-            } else {
-                line.setCountHeaderId(countHeaderId);
-                linesToInsert.add(line);
-            }
-        }
-        if (!linesToUpdate.isEmpty()) {
-            invCountLineRepository.batchUpdateByPrimaryKeySelective(linesToUpdate);
-        }
-        if (!linesToInsert.isEmpty()) {
-            invCountLineRepository.batchInsertSelective(linesToInsert);
-        }
-    }
-
     // Method for insert headers
     private void processInsertHeaders(List<InvCountHeader> insertList) {
         for (InvCountHeader header : insertList) {
@@ -1106,19 +1085,6 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         invCountInfo.setTotalErrorMsg(errorMessage.toString());
 
         invCountHeaderRepository.batchUpdateByPrimaryKeySelective(updateList);
-    }
-
-    // Method for Stock Validation
-    private void stockValidation(List<InvStock> invStock) {
-        List<InvStock> stockList = invStock.stream()
-                .filter(line -> line.getStockId() != null)
-                .collect(Collectors.toList());
-        for (InvStock stock : stockList) {
-            if (stock.getAvailableQuantity() == null ||
-                    stock.getAvailableQuantity().compareTo(BigDecimal.ZERO) <= 0) {
-                throw new CommonException("Unable to query on hand quantity data");
-            }
-        }
     }
 
     private InvCountExtra createInvCountExtra(InvCountHeaderDTO invCountHeaderDTO, String programKey) {
