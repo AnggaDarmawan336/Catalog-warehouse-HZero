@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class WorkFlowDTO {
+public class WorkFlowEventDTO {
     private String businessKey;
     private String docStatus;
     private Long workflowId;

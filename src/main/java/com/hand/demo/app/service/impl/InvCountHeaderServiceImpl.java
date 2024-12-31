@@ -29,18 +29,15 @@ import org.hzero.boot.workflow.dto.RunTaskHistory;
 import org.hzero.core.base.BaseConstants;
 import org.hzero.mybatis.common.Criteria;
 import org.hzero.mybatis.domian.Condition;
-import org.mule.mvel2.util.Make;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.hand.demo.app.service.InvCountHeaderService;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -471,7 +468,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             if (hasError) {
                 header.setErrorMsg(errorMsg.toString());
                 failedList.add(header);
-                totalErrorMsg.append(errorMsg).append("\n");
+                totalErrorMsg.append(errorMsg);
             } else {
                 successList.add(header);
             }
@@ -526,6 +523,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                     line.setCountHeaderId(header.getCountHeaderId());
                     line.setCounterIds(header.getCounterIds());
                     line.setLineNumber(lineNumber);
+                    line.setWarehouseId(header.getWarehouseId());
 
                     line.setBatchId(stock.getBatchId());
                     line.setMaterialId(stock.getMaterialId());
@@ -550,7 +548,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
     @Override
     public List<InvCountHeaderDTO> orderExecution(List<InvCountHeaderDTO> invCountHeaders) {
-        // TODO untuk yang check karena return nya inCountInfo harus di consider
+        // TODO untuk yang check karena return nya invCountInfo harus di consider
 
         this.manualSaveCheck(invCountHeaders).getSuccessList();
         this.manualSave(invCountHeaders);
@@ -713,7 +711,10 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         // Create condition for line headerId and header headerId is equal
         Condition condition = new Condition(InvCountLine.class);
         condition.createCriteria().andEqualTo(InvCountLine.FIELD_COUNT_HEADER_ID, invCountHeader.getCountHeaderId());
+
+        // TODO just use MAP so i dont need to query again on databse
         int lines = invCountLineRepository.selectCountByCondition(condition);
+
         if (invCountHeader.getCountOrderLineList().size() != lines){
             errorMessage = errorMessage + "The counting order line data is inconsistent with the INV system, please check the data";
             status = "E";
@@ -751,6 +752,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                 invCountLineList.add(invCountLine);
             }
             // For Update
+            // TODO gunakan batchUpdateOptional jadi hanya 3 field yang terupdate
             invCountLineRepository.batchUpdateByPrimaryKeySelective(invCountLineList);
         }else {
             invCountHeader.setStatus(status);
@@ -761,77 +763,82 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
 
     @Override
     public InvCountInfoDTO submitCheck(List<InvCountHeaderDTO> invCountHeaders) {
+        // Create Array for successList, failedList and totalErrorMsg
+        List<InvCountHeaderDTO> successList = new ArrayList<>();
+        List<InvCountHeaderDTO> failedList = new ArrayList<>();
+        StringBuilder totalErrorMsg = new StringBuilder();
         InvCountInfoDTO invCountInfo = new InvCountInfoDTO();
 
         // 1. Check document status
-        for (InvCountHeaderDTO invCountHeader : invCountHeaders) {
+        for (InvCountHeaderDTO invCountHeaderDTO : invCountHeaders) {
+            boolean hasError = false;
             StringBuilder errorMessage = new StringBuilder();
+
             String[] validStatus = {"PROCESSING", "INCOUNTING", "REJECTED", "WITHDRAWN"};
-            String status = invCountHeader.getCountStatus();
+            String status = invCountHeaderDTO.getCountStatus();
             if (!Arrays.asList(validStatus).contains(status)) {
-                invCountInfo.setFailedList(invCountHeaders);
                 errorMessage.append("The operation is allowed only when the status in in counting, processing, rejected, withdrawn.");
+                hasError = true;
             }
 
             // To Collect supervisor
-            List<Long> supervisorList = Arrays.stream(invCountHeader.getSupervisorIds().split(","))
-                            .map(Long::parseLong)
-                            .collect(Collectors.toList());
-
-            boolean isSupervisor = false;
+            String supervisorId = invCountHeaderDTO.getSupervisorIds();
 
             // To Collect UserId by DetailsHelper
             Long currentUserId = DetailsHelper.getUserDetails().getUserId();
 
             // 2. current login user validation
-                if (supervisorList.contains(currentUserId)){
-                    isSupervisor = true;
-                }
-                if (!isSupervisor){
-                    invCountInfo.setFailedList(invCountHeaders);
-                    errorMessage.append("Only the current login user is the supervisor can submit document.");
-                }
+            if (!supervisorId.equals(currentUserId.toString())) {
+                errorMessage.append("Only the current login user is the supervisor can submit document.");
+                hasError = true;
+            }
 
-                // 3. Data integrity check
-                for (InvCountLineDTO invCountLineDTO : invCountHeader.getCountOrderLineList()) {
-                    if (invCountLineDTO.getUnitQty() == null ||
-                        invCountLineDTO.getSnapshotUnitQty() == null ||
-                        invCountLineDTO.getUnitDiffQty() == null){
-                            invCountInfo.setFailedList(invCountHeaders);
-                            errorMessage.append("There are data rows with empty count quantity. Please check the data.");
+            Condition condition = new Condition(InvCountLine.class);
+            condition.createCriteria().andEqualTo(InvCountLine.FIELD_COUNT_HEADER_ID, invCountHeaderDTO.getCountHeaderId());
+
+            // Fetch Data Line
+            List<InvCountLine> dataLine = invCountLineRepository.selectByCondition(condition);
+
+            // 3. Data integrity check
+            for (InvCountLine invCountLine : dataLine) {
+                if (invCountLine.getUnitQty() == null ||
+                    invCountLine.getSnapshotUnitQty() == null ||
+                    invCountLine.getUnitDiffQty() == null){
+                        errorMessage.append("There are data rows with empty count quantity. Please check the data.");
+                        hasError = true;
                     }
 
-                    // To get invCountLine
-                    InvCountLineDTO invCountLine = new InvCountLineDTO();
-                    InvCountLine line = invCountLineRepository.selectByPrimary(invCountLineDTO.getCountLineId());
-
-                    // Copy Properties invCountLine to invCountLineDTO
-                    BeanUtils.copyProperties(line, invCountLine);
-
-                    // Logic for check the unit quantity
-                    if (!invCountLine.getUnitQty().equals(invCountLineDTO.getUnitQty()) && StringUtils.isEmpty(invCountHeader.getReason())){
-                        invCountInfo.setFailedList(invCountHeaders);
-                        errorMessage.append("there is a difference in counting");
+                // Logic for check the difference in counting
+                try{
+                    BigDecimal unitDiffQty = invCountLine.getUnitQty().subtract(invCountLine.getSnapshotUnitQty());
+                    if (unitDiffQty.equals(invCountLine.getUnitDiffQty())){
+                        invCountHeaderDTO.setReason("");
                     }
-                }
-
-                // To collect error message
-                if (errorMessage.length() > 0){
-                    invCountInfo.setFailedList(invCountHeaders);
-                    invCountInfo.setTotalErrorMsg(errorMessage.substring(0, errorMessage.length() - 1));
-                    return invCountInfo;
+                } catch (Exception e){
+                    invCountHeaderDTO.setReason(e.getMessage());
+                    errorMessage.append("there is a difference in counting");
+                    hasError = true;
                 }
             }
-        invCountInfo.setSuccessList(invCountHeaders);
+            // To collect error message
+            if (hasError) {
+                invCountHeaderDTO.setErrorMsg(errorMessage.toString());
+
+                failedList.add(invCountHeaderDTO);
+                totalErrorMsg.append(invCountHeaderDTO);
+            } else {
+                successList.add(invCountHeaderDTO);
+            }
+        }
+        invCountInfo.setFailedList(failedList);
+        invCountInfo.setTotalErrorMsg(totalErrorMsg.toString());
+        invCountInfo.setSuccessList(successList);
+
         return invCountInfo;
     }
 
     @Override
     public List<InvCountHeaderDTO> submit(List<InvCountHeaderDTO> invCountHeaders) {
-        InvCountInfoDTO invCountInfo = submitCheck(invCountHeaders);
-        if (!CollectionUtils.isEmpty(invCountInfo.getFailedList())){
-            throw new CommonException(invCountInfo.getTotalErrorMsg());
-        }
 
         // Start Workflow
         for (InvCountHeaderDTO invCountHeaderDTO : invCountHeaders) {
@@ -842,12 +849,10 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             if (workflow.equals("1")){
 
                 // To get the User by DetailsHelper
-                Map<String, Object> variableMap = new HashMap<>();
-                String starter = Constants.WORKFLOW_DEFAULT_DIMENSION.equals("USER") ?
-                        String.valueOf(DetailsHelper.getUserDetails().getUserId()) :
-                        DetailsHelper.getUserDetails().getUsername();
+                String starter = DetailsHelper.getUserDetails().getUsername();
 
                 // To put the Department Code
+                Map<String, Object> variableMap = new HashMap<>();
                 variableMap.put("departmentCode", iamDepartmentRepository.selectByPrimary(invCountHeaderDTO.getDepartmentId()).getDepartmentCode());
 
                 // To set the RunInstance by FlowKey
@@ -857,96 +862,91 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                         Constants.WORKFLOW_DEFAULT_DIMENSION,
                         starter,
                         variableMap);
-
-                // Copy Properties from invCountHeaderDTO to invCountHeader
-                InvCountHeader invCountHeader = new InvCountHeader();
-                BeanUtils.copyProperties(invCountHeaderDTO, invCountHeader);
-
-                // To update the invCountHeader
-                invCountHeaderRepository.updateOptional(invCountHeader, InvCountHeader.FIELD_REASON);
             } else {
-                String status = "CONFIRMED";
-                invCountHeaderDTO.setCountStatus(status);
-                InvCountHeader invCountHeader = new InvCountHeader();
-
-                // Copy Properties from invCountHeaderDTO to invCountHeader
-                BeanUtils.copyProperties(invCountHeaderDTO, invCountHeader);
-
-                // To update the invCountHeader
-                invCountHeaderRepository.updateOptional(invCountHeader,
-                        InvCountHeader.FIELD_COUNT_STATUS,
-                        InvCountHeader.FIELD_REASON);
+                invCountHeaderDTO.setCountStatus("CONFIRMED");
             }
+
+            invCountHeaderRepository.updateOptional(invCountHeaderDTO,
+                    InvCountHeader.FIELD_COUNT_STATUS);
         }
         return invCountHeaders;
     }
 
     @Override
-    public void callBack(Long organizationId, WorkFlowDTO workFlowDTO) {
+    public InvCountInfoDTO orderSubmit(List<InvCountHeaderDTO> invCountHeaders) {
+        InvCountInfoDTO manualSaveVerification = manualSaveCheck(invCountHeaders);
+        List<InvCountHeaderDTO> manualSaveResult = manualSave(manualSaveVerification.getSuccessList());
+        InvCountInfoDTO submitCheck = submitCheck(manualSaveResult);
+        List<InvCountHeaderDTO> submitResult = submit(submitCheck.getSuccessList());
+
+        InvCountInfoDTO result = new InvCountInfoDTO();
+        result.setSuccessList(submitResult);
+        result.setFailedList(submitCheck.getFailedList());
+        result.setTotalErrorMsg(submitCheck.getTotalErrorMsg());
+
+        return result;
+    }
+
+    @Override
+    public void callBack(WorkFlowEventDTO workFlowEventDTO) {
 
         InvCountHeader header = new InvCountHeader();
 
+        Long tenantId = DetailsHelper.getUserDetails().getTenantId();
+
+        Long supervisorId = DetailsHelper.getUserDetails().getUserId();
+
         // To set Count Number and Tenant ID
-        header.setCountNumber(workFlowDTO.getBusinessKey());
-        header.setTenantId(organizationId);
+        header.setCountNumber(workFlowEventDTO.getBusinessKey());
+        header.setTenantId(tenantId);
 
         // To get InvCountHeader with condition in header
         InvCountHeader invCountHeader = invCountHeaderRepository.selectOne(header);
 
         // To update countStatus, workFlowId and approvedTime
-        invCountHeader.setCountStatus(workFlowDTO.getDocStatus());
-        invCountHeader.setWorkflowId(workFlowDTO.getWorkflowId());
-        invCountHeader.setApprovedTime(workFlowDTO.getApprovedTime());
+        invCountHeader.setCountStatus(workFlowEventDTO.getDocStatus());
+        invCountHeader.setWorkflowId(workFlowEventDTO.getWorkflowId());
+        invCountHeader.setApprovedTime(workFlowEventDTO.getApprovedTime());
+        invCountHeader.setSupervisorIds(String.valueOf(supervisorId));
 
-        invCountHeaderRepository.updateByPrimaryKeySelective(invCountHeader);
+        invCountHeaderRepository.updateOptional(invCountHeader,
+                InvCountHeader.FIELD_COUNT_STATUS,
+                InvCountHeader.FIELD_WORKFLOW_ID,
+                InvCountHeader.FIELD_APPROVED_TIME,
+                InvCountHeader.FIELD_SUPERVISOR_IDS);
     }
 
     @Override
     public List<InvCountHeaderDTO> countingOrderReportDs(InvCountHeaderDTO invCountHeaderDTO) {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // Set a custom date format
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        objectMapper.setDateFormat(dateFormat);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        // 3. Build the query condition
-        Condition condition = new Condition(InvCountHeader.class);
-        condition.createCriteria().andEqualTo(InvCountHeader.FIELD_COUNT_HEADER_ID, invCountHeaderDTO.getCountHeaderId());
-
-        if (invCountHeaderDTO.getCountStatus() != null) {
-            condition.and().andIn(InvCountHeader.FIELD_COUNT_STATUS, Collections.singleton(invCountHeaderDTO.getCountStatus()));
-        }
-        if (invCountHeaderDTO.getCountType() != null) {
-            condition.and().andEqualTo(InvCountHeader.FIELD_COUNT_TYPE, invCountHeaderDTO.getCountType());
-        }
-        if (invCountHeaderDTO.getCountDimension() != null) {
-            condition.and().andEqualTo(InvCountHeader.FIELD_COUNT_DIMENSION, invCountHeaderDTO.getCountDimension());
-        }
-        if (invCountHeaderDTO.getCountMode() != null) {
-            condition.and().andEqualTo(InvCountHeader.FIELD_COUNT_MODE, invCountHeaderDTO.getCountMode());
-        }
 
         // 4. Fetch data from the database
-        List<InvCountHeader> dataInvCountHeader = invCountHeaderRepository.selectByCondition(condition);
+        List<InvCountHeader> dataInvCountHeader = Collections.singletonList(invCountHeaderRepository.selectByPrimary(invCountHeaderDTO.getCountHeaderId()));
 
         IamDepartment department = iamDepartmentRepository.selectByPrimary(invCountHeaderDTO.getDepartmentId());
 
         // 5. Process the data and set the lines
         List<InvCountHeaderDTO> result = null;
+
+        // Create InvCountLineDTO for query
+        InvCountLineDTO invCountLineDTO = new InvCountLineDTO();
+        invCountLineDTO.setCountHeaderId(invCountHeaderDTO.getCountHeaderId());
+
+
+        // TODO Semua query yang mengambil data dari database, jangan di taruh dalam looping
+        InvCountHeaderDTO dto = invCountHeaderRepository.selectByPrimary(invCountHeaderDTO.getCountHeaderId());
+
+        List<InvMaterial> invMaterials = invMaterialRepository.selectByIds(dto.getSnapshotMaterialIds());
+
+        List<InvBatch> invBatches = invBatchRepository.selectByIds(dto.getSnapshotBatchIds());
+
+        InvWarehouse invWarehouses = invWarehouseRepository.selectByPrimaryKey(dto.getWarehouseId());
+
+        // Fetch InvCountLineDTO data from repository
+        List<InvCountLineDTO> invCountLineDTOList = invCountLineRepository.selectList(invCountLineDTO);
         for (InvCountHeader header : dataInvCountHeader) {
             result = new ArrayList<>();
 
-            // Create InvCountLineDTO for query
-            InvCountLineDTO invCountLineDTO = new InvCountLineDTO();
-            invCountLineDTO.setCountHeaderId(header.getCountHeaderId());
-
-            // Fetch InvCountLineDTO data from repository
-            List<InvCountLineDTO> invCountLineDTOList = invCountLineRepository.selectList(invCountLineDTO);
             invCountLineDTOList.sort(Comparator.comparing(InvCountLineDTO::getCountLineId));
-            InvCountHeaderDTO dto = invCountHeaderRepository.selectByPrimary(header.getCountHeaderId());
 
             // Get counterIds
             String[] counterIds = dto.getCounterIds().split(",");
@@ -972,7 +972,6 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             dto.setDepartmentName(department.getDepartmentName());
 
             // Get Material Code
-            List<InvMaterial> invMaterials = invMaterialRepository.selectByIds(dto.getSnapshotMaterialIds());
             List<MaterialDTO> materialIdList = new ArrayList<>();
             invMaterials.forEach(invMaterials1 -> {
                 MaterialDTO materialDTO = new MaterialDTO();
@@ -983,7 +982,6 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             dto.setSnapshotMaterialList(materialIdList);
 
             // Get Batch Code
-            List<InvBatch> invBatches = invBatchRepository.selectByIds(dto.getSnapshotBatchIds());
             List<BatchDTO> batchIdList = new ArrayList<>();
             invBatches.forEach(invBatches1 -> {
                 BatchDTO batchDTO = new BatchDTO();
@@ -992,6 +990,9 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                 batchIdList.add(batchDTO);
             });
             dto.setSnapshotBatchList(batchIdList);
+
+            // Get Warehouse Code
+            dto.setWarehouseCode(invWarehouses.getWarehouseCode());
 
             // Get History Approval
             List<RunTaskHistory> historyList = new ArrayList<>();

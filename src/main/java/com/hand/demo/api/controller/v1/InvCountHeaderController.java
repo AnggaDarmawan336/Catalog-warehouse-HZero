@@ -1,7 +1,7 @@
 package com.hand.demo.api.controller.v1;
 
 import com.hand.demo.api.dto.InvCountHeaderDTO;
-import com.hand.demo.api.dto.WorkFlowDTO;
+import com.hand.demo.api.dto.WorkFlowEventDTO;
 import com.hand.demo.infra.mapper.InvCountHeaderMapper;
 import io.choerodon.core.domain.Page;
 import io.choerodon.core.iam.ResourceLevel;
@@ -86,7 +86,7 @@ public class InvCountHeaderController extends BaseController {
     @ProcessLovValue(targetField = BaseConstants.FIELD_BODY)
     @DeleteMapping
     public ResponseEntity<?> orderRemove(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
-        SecurityTokenHelper.validToken(invCountHeaders);
+        SecurityTokenHelper.validTokenIgnoreInsert(invCountHeaders);
         invCountHeaderService.checkAndRemove(invCountHeaders);
         return Results.success("Delete Successfully!");
     }
@@ -113,16 +113,16 @@ public class InvCountHeaderController extends BaseController {
     @Permission(level = ResourceLevel.ORGANIZATION)
     @PostMapping("/order-submit")
     public ResponseEntity<?> orderSubmit(@RequestBody List<InvCountHeaderDTO> invCountHeaders) {
-        SecurityTokenHelper.validToken(invCountHeaders);
-        invCountHeaderService.submit(invCountHeaders);
+        SecurityTokenHelper.validTokenIgnoreInsert(invCountHeaders);
+        invCountHeaderService.orderSubmit(invCountHeaders);
         return Results.success(invCountHeaders);
     }
 
     @ApiOperation(value = "callBack")
     @Permission(level = ResourceLevel.ORGANIZATION)
     @PostMapping("/call-back")
-    public ResponseEntity<?> callBack(@PathVariable Long organizationId ,@RequestBody WorkFlowDTO invCountHeaders) {
-        invCountHeaderService.callBack(organizationId ,invCountHeaders);
+    public ResponseEntity<?> callBack(@RequestBody WorkFlowEventDTO invCountHeaders) {
+        invCountHeaderService.callBack(invCountHeaders);
         return Results.success(invCountHeaders);
     }
 
