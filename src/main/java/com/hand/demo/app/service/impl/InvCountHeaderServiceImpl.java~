@@ -483,6 +483,14 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         ResponseEntity<String> stringResponseEntity = iamRemoteService.selectSelf();
         ObjectMapper objectMapper = new ObjectMapper();
 
+        // TODO jika tidak perlu dihapus aja
+        // Format Date from String to Date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        objectMapper.setDateFormat(dateFormat);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         try{
             // To get Employee Details
             UserVO userVO = objectMapper.readValue(stringResponseEntity.getBody(), UserVO.class);
@@ -732,10 +740,8 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
                 invCountLineList.add(invCountLine);
             }
             // For Update
-            invCountLineRepository.batchUpdateOptional(invCountLineList,
-                    InvCountLine.FIELD_OBJECT_VERSION_NUMBER,
-                    InvCountLine.FIELD_UNIT_DIFF_QTY,
-                    InvCountLine.FIELD_COUNTER_IDS);
+            // TODO gunakan batchUpdateOptional jadi hanya 3 field yang terupdate
+            invCountLineRepository.batchUpdateByPrimaryKeySelective(invCountLineList);
         }else {
             invCountHeader.setStatus(status);
             invCountHeader.setErrorMsg(errorMessage);
@@ -924,7 +930,7 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         InvWarehouse invWarehouses = invWarehouseRepository.selectByPrimaryKey(dto.getWarehouseId());
 
         // Fetch InvCountLineDTO data from repository
-        List<InvCountLineDTO> invCountLineDTOList = Collections.singletonList(invCountLineRepository.selectByPrimary(invCountHeaderDTO.getCountHeaderId()));
+        List<InvCountLineDTO> invCountLineDTOList = invCountLineRepository.selectList(invCountLineDTO);
         for (InvCountHeader header : dataInvCountHeader) {
             result = new ArrayList<>();
 
@@ -1028,6 +1034,17 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
         return invStockRepository.selectSummary(invStock);
     }
 
+    private void validation(InvCountHeader invCountHeader){
+        if (!isValidStatus(invCountHeader.getCountStatus())){
+            throw new CommonException(
+                    "Only draft, in counting, rejected, and withdrawn status can be modified");
+        }
+    }
+
+    private boolean isValidStatus(String status) {
+        return "DRAFT".equals(status) || "INCOUNTING".equals(status) || "REJECTED".equals(status) || "WITHDRAWN".equals(status);
+    }
+
     // Method for insert headers
     private void processInsertHeaders(List<InvCountHeader> insertList) {
         for (InvCountHeader header : insertList) {
@@ -1041,6 +1058,21 @@ public class InvCountHeaderServiceImpl implements InvCountHeaderService {
             header.setCountStatus("DRAFT");
         }
         invCountHeaderRepository.batchInsertSelective(insertList);
+    }
+
+    // Method for update headers dan lines
+    private void processUpdateHeaders(List<InvCountHeader> updateList) {
+        StringBuilder errorMessage = new StringBuilder();
+        InvCountInfoDTO invCountInfo = new InvCountInfoDTO();
+
+        for (InvCountHeader header : updateList) {
+            if (!header.getCountStatus().equals("DRAFT")) {
+                errorMessage.append("Only draft status allows updates");
+            }
+        }
+        invCountInfo.setTotalErrorMsg(errorMessage.toString());
+
+        invCountHeaderRepository.batchUpdateByPrimaryKeySelective(updateList);
     }
 
     private InvCountExtra createInvCountExtra(InvCountHeaderDTO invCountHeaderDTO, String programKey) {

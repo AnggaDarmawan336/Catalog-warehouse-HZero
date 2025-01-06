@@ -145,7 +145,8 @@ public class InvCountHeader extends AuditDomain implements Serializable {
     private String countNumber;
 
     @ApiModelProperty(value = "", required = true)
-    @NotBlank(groups = {validateCreate.class, validateExecute.class})
+    @NotBlank
+//            (groups = {validateCreate.class, validateExecute.class})
     @LovValue(lovCode = Constants.LOV_CODE_COUNT_STATUS)
     private String countStatus;
     @Transient
